@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .order-container {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    .order-item {
+        background: white;
+        margin: 10px 0;
+        padding: 15px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .item-info {
+        flex: 1;
+    }
+    .total-section {
+        background: white;
+        padding: 20px;
+        border-radius: 5px;
+        border: 2px solid #007bff;
+        margin: 20px 0;
+        text-align: right;
+    }
+    .form-group {
+        margin: 15px 0;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .form-group input, .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        margin: 5px;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    .btn:hover {
+        opacity: 0.9;
+    }
+    .button-group {
+        text-align: center;
+        margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="order-container">
+  <h1>주문 확인</h1>
+
+  <h3>주문 상품</h3>
+  <div th:each="item : ${selectedItems}" class="order-item">
+    <div class="item-info">
+      <h4 th:text="${item.product.productName}">상품명</h4>
+      <p>수량: <span th:text="${item.quantity}">1</span>개</p>
+      <p>단가: <span th:text="${item.product.price}">10000</span>원</p>
+      <p>소계: <span th:text="${item.product.price * item.quantity}">10000</span>원</p>
+    </div>
+  </div>
+
+  <div class="total-section">
+    <h3>총 결제금액: <span th:text="${totalPrice}">0</span>원</h3>
+  </div>
+
+  <form th:action="@{/order/complete}" method="post">
+    <!-- 선택된 장바구니 아이템들의 정보를 hidden으로 전달 -->
+    <div th:each="item : ${selectedItems}">
+      <input type="hidden" name="cartIds" th:value="${item.id}">
+      <input type="hidden" name="quantities" th:value="${item.quantity}">
+    </div>
+
+    <div class="form-group">
+      <label for="address">배송지:</label>
+      <input type="text" id="address" name="address" placeholder="배송받을 주소를 입력하세요" required>
+    </div>
+
+    <div class="form-group">
+      <label for="paymentMethod">결제수단:</label>
+      <select id="paymentMethod" name="paymentMethod" required>
+        <option value="">결제수단을 선택하세요</option>
+        <option value="CARD">신용카드</option>
+        <option value="BANK">계좌이체</option>
+        <option value="CASH">무통장입금</option>
+      </select>
+    </div>
+
+    <div class="button-group">
+      <a href="/cart/view" class="btn btn-secondary">장바구니로 돌아가기</a>
+      <button type="submit" class="btn btn-primary">결제하기</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

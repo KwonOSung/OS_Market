@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원 탈퇴</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .logo img {
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo img:hover {
+            transform: scale(1.1);
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 2rem;
+        }
+
+        .search-bar form {
+            display: flex;
+            background: white;
+            border-radius: 50px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .search-bar form:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            background: transparent;
+        }
+
+        .search-bar button {
+            padding: 15px 25px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            transform: scale(1.05);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .user-menu span {
+            font-weight: 600;
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .user-menu button {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .user-menu button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
+
+        .user-menu a {
+            text-decoration: none;
+        }
+
+        /* Navigation Styles */
+        nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Main Container */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 140px);
+            padding: 2rem;
+        }
+
+        /* Delete Account Card */
+        .delete-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 3rem;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .delete-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+        }
+
+        .delete-card h1 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Warning Section */
+        .warning-section {
+            background: rgba(255, 107, 107, 0.1);
+            border: 2px solid rgba(255, 107, 107, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .warning-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .warning-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+
+        .warning-text {
+            color: #666;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .warning-list {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 1rem;
+        }
+
+        .warning-list h3 {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .warning-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .warning-list li {
+            color: #666;
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .warning-list li::before {
+            content: '⚠️';
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        /* Confirmation Section */
+        .confirmation-section {
+            margin: 2rem 0;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-container:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+        }
+
+        .checkbox-container label {
+            color: #333;
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        /* Delete Button */
+        .delete-button {
+            width: 100%;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .delete-button.enabled {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .delete-button.enabled:hover {
+            background: linear-gradient(45deg, #ee5a6f, #ff6b6b);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .delete-button.enabled:active {
+            transform: translateY(0);
+        }
+
+        /* Cancel Button */
+        .cancel-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .cancel-button:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Icons */
+        .icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 400px;
+            text-align: center;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .modal h3 {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .modal p {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .modal-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .modal-confirm {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .modal-confirm:hover {
+            background: #ee5a6f;
+        }
+
+        .modal-cancel {
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .modal-cancel:hover {
+            background: #e9ecef;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .search-bar {
+                margin: 0;
+                max-width: 100%;
+            }
+
+            nav {
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            nav a {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+
+            .container {
+                padding: 1rem;
+                min-height: calc(100vh - 200px);
+            }
+
+            .delete-card {
+                padding: 2rem;
+                margin: 1rem 0;
+            }
+
+            .delete-card h1 {
+                font-size: 1.8rem;
+            }
+
+            .modal {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .modal-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .user-menu {
+                justify-content: center;
+            }
+
+            .user-menu button {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            .delete-card {
+                padding: 1.5rem;
+            }
+
+            .delete-card h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Focus styles for accessibility */
+        button:focus,
+        input:focus,
+        a:focus {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <a href="/"><img th:src="@{/images/logo.png}" alt="로고"></a>
+    </div>
+
+    <div class="search-bar">
+        <form th:action="@{/product/search}" method="get" id="searchForm">
+            <input type="text" name="keyword" placeholder="상품을 검색하세요" id="searchInput">
+            <button type="submit" id="searchBtn">검색</button>
+        </form>
+    </div>
+
+    <div class="user-menu">
+        <div th:if="${#authorization.expression('isAuthenticated()')}">
+            <span th:text="${#authentication.name}">유저</span>님 환영합니다!
+            <a href="/mypage"><button>마이페이지</button></a>
+            <a href="/cart"><button>장바구니</button></a>
+
+            <!-- ✅ 관리자 전용 버튼 -->
+            <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                <a href="/admin"><button>관리자 페이지</button></a>
+            </div>
+
+            <a href="/logout"><button>로그아웃</button></a>
+        </div>
+
+        <div th:if="${#authorization.expression('!isAuthenticated()')}">
+            <a href="/login"><button>로그인</button></a>
+            <a href="/insertMember"><button>회원가입</button></a>
+        </div>
+    </div>
+</header>
+
+<nav>
+    <a href="/">전체 상품</a>
+    <a href="/product/best">베스트</a>
+    <a href="/product/category?type=의류">의류</a>
+    <a href="/product/category?type=전자">전자제품</a>
+    <a href="/free">자유게시판</a>
+    <a href="/">상품 리뷰 게시판</a>
+</nav>
+
+<div class="container">
+    <div class="delete-card">
+        <h1>🗑️ 회원 탈퇴</h1>
+
+        <div class="warning-section">
+            <div class="warning-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                </svg>
+            </div>
+
+            <p class="warning-text">
+                정말로 탈퇴하시겠습니까? 탈퇴하면 모든 정보가 삭제됩니다.
+            </p>
+
+            <div class="warning-list">
+                <h3>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    탈퇴 시 삭제되는 정보
+                </h3>
+                <ul>
+                    <li>모든 개인정보 (이름, 이메일, 주소 등)</li>
+                    <li>주문 내역 및 구매 기록</li>
+                    <li>작성한 리뷰 및 게시글</li>
+                    <li>적립된 포인트 및 쿠폰</li>
+                    <li>장바구니 및 찜 목록</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="confirmation-section">
+            <div class="checkbox-container">
+                <input type="checkbox" id="confirmDelete" required>
+                <label for="confirmDelete">
+                    위 내용을 확인했으며, 탈퇴에 동의합니다.
+                </label>
+            </div>
+        </div>
+
+        <form action="/member/delete" method="post" id="deleteForm">
+            <button type="button" class="delete-button" id="deleteButton">
+                회원 탈퇴하기
+            </button>
+        </form>
+
+        <a href="/mypage" class="cancel-button">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+            마이페이지로 돌아가기
+        </a>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <h3>⚠️ 최종 확인</h3>
+        <p>정말로 탈퇴하시겠습니까?<br>이 작업은 되돌릴 수 없습니다.</p>
+        <div class="modal-buttons">
+            <button class="modal-button modal-confirm" id="finalConfirm">탈퇴하기</button>
+            <button class="modal-button modal-cancel" id="modalCancel">취소</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // 헤더 스크롤 효과
+        function handleScroll() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 2px 30px rgba(0, 0, 0, 0.15)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+            }
+        }
+
+        window.addEventListener('scroll', handleScroll);
+
+        // 요소들 가져오기
+        const confirmCheckbox = document.getElementById('confirmDelete');
+        const deleteButton = document.getElementById('deleteButton');
+        const deleteForm = document.getElementById('deleteForm');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const finalConfirm = document.getElementById('finalConfirm');
+        const modalCancel = document.getElementById('modalCancel');
+
+        // 체크박스 상태에 따른 버튼 활성화
+        if (confirmCheckbox && deleteButton) {
+            confirmCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    deleteButton.classList.add('enabled');
+                } else {
+                    deleteButton.classList.remove('enabled');
+                }
+            });
+        }
+
+        // 탈퇴 버튼 클릭 시 모달 표시
+        if (deleteButton) {
+            deleteButton.addEventListener('click', function() {
+                if (this.classList.contains('enabled')) {
+                    modalOverlay.style.display = 'flex';
+                }
+            });
+        }
+
+        // 모달 취소 버튼
+        if (modalCancel) {
+            modalCancel.addEventListener('click', function() {
+                modalOverlay.style.display = 'none';
+            });
+        }
+
+        // 모달 배경 클릭 시 닫기
+        if (modalOverlay) {
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) {
+                    modalOverlay.style.display = 'none';
+                }
+            });
+        }
+
+        // 최종 확인 버튼 - 실제 탈퇴 처리
+        if (finalConfirm && deleteForm) {
+            finalConfirm.addEventListener('click', function() {
+                // 로딩 상태
+                this.classList.add('loading');
+                this.innerHTML = '🔄 처리중...';
+                this.disabled = true;
+
+                // 실제 폼 제출
+                setTimeout(() => {
+                    deleteForm.submit();
+                }, 1000);
+            });
+        }
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modalOverlay.style.display === 'flex') {
+                modalOverlay.style.display = 'none';
+            }
+        });
+
+        // 검색 폼 제출 시 로딩 효과
+        const searchForm = document.getElementById('searchForm');
+        const searchBtn = document.getElementById('searchBtn');
+
+        if (searchForm && searchBtn) {
+            searchForm.addEventListener('submit', function() {
+                searchBtn.innerHTML = '검색중...';
+                searchBtn.disabled = true;
+            });
+        }
+
+        // 페이지 로딩 애니메이션
+        document.body.style.opacity = '0';
+        setTimeout(() => {
+            document.body.style.transition = 'opacity 0.5s ease';
+            document.body.style.opacity = '1';
+        }, 100);
+
+        // 버튼 리플 효과
+        const buttons = document.querySelectorAll('button, .cancel-button');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.3);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                `;
+
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // CSS 애니메이션 정의
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 경고 아이콘 펄스 애니메이션 제어
+        const warningIcon = document.querySelector('.warning-icon');
+        if (warningIcon) {
+            setInterval(() => {
+                warningIcon.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    warningIcon.style.transform = 'scale(1)';
+                }, 200);
+            }, 3000);
+        }
+
+        // 체크박스 클릭 시 애니메이션
+        if (confirmCheckbox) {
+            const container = confirmCheckbox.closest('.checkbox-container');
+            confirmCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    container.style.background = 'rgba(102, 126, 234, 0.1)';
+                    container.style.borderColor = '#667eea';
+                } else {
+                    container.style.background = 'rgba(255, 255, 255, 0.8)';
+                    container.style.borderColor = 'transparent';
+                }
+            });
+        }
+
+    });
+</script>
+
+</body>
+</html>

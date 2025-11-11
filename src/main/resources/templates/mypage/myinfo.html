@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>정보 수정</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        min-height: 100vh;
+    }
+
+    /* Header Styles */
+    header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.3s ease;
+    }
+
+    .logo img {
+        height: 50px;
+        transition: transform 0.3s ease;
+    }
+
+    .logo img:hover {
+        transform: scale(1.1);
+    }
+
+    .search-bar {
+        flex: 1;
+        max-width: 500px;
+        margin: 0 2rem;
+    }
+
+    .search-bar form {
+        display: flex;
+        background: white;
+        border-radius: 50px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .search-bar form:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .search-bar input {
+        flex: 1;
+        padding: 15px 20px;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        background: transparent;
+    }
+
+    .search-bar button {
+        padding: 15px 25px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .search-bar button:hover {
+        background: linear-gradient(45deg, #764ba2, #667eea);
+        transform: scale(1.05);
+    }
+
+    .user-menu {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .user-menu span {
+        font-weight: 600;
+        color: #667eea;
+        margin-right: 10px;
+    }
+
+    .user-menu button {
+        padding: 10px 20px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .user-menu button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        background: linear-gradient(45deg, #764ba2, #667eea);
+    }
+
+    .user-menu a {
+        text-decoration: none;
+    }
+
+    /* Navigation Styles */
+    nav {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    nav a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        padding: 10px 20px;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+    }
+
+    nav a:hover {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    /* Main Container */
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: calc(100vh - 140px);
+        padding: 2rem;
+    }
+
+    /* Edit Profile Card */
+    .edit-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 30px;
+        padding: 3rem;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+        width: 100%;
+        max-width: 500px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.8s ease;
+    }
+
+    .edit-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+    }
+
+    .edit-card h1 {
+        color: #333;
+        margin-bottom: 2rem;
+        font-size: 2.2rem;
+        font-weight: 700;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Form Styles */
+    .edit-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: left;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-weight: 600;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid rgba(102, 126, 234, 0.2);
+        border-radius: 15px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.8);
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
+        background: white;
+        transform: translateY(-2px);
+    }
+
+    .form-group input:hover {
+        border-color: rgba(102, 126, 234, 0.4);
+    }
+
+    /* Update Button */
+    .update-button {
+        width: 100%;
+        padding: 15px 30px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 1rem;
+    }
+
+    .update-button:hover {
+        background: linear-gradient(45deg, #764ba2, #667eea);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .update-button:active {
+        transform: translateY(0);
+    }
+
+    /* Back Link */
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.8);
+        color: #333;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+        background: rgba(255, 255, 255, 1);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Icons */
+    .icon {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+    }
+
+    /* Validation styles */
+    .form-group input:invalid {
+        border-color: rgba(220, 53, 69, 0.3);
+    }
+
+    .form-group input:valid {
+        border-color: rgba(40, 167, 69, 0.3);
+    }
+
+    /* Success/Error Messages */
+    .message {
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+        text-align: center;
+        animation: slideDown 0.3s ease;
+    }
+
+    .success-message {
+        background: rgba(40, 167, 69, 0.1);
+        border: 1px solid rgba(40, 167, 69, 0.3);
+        color: #28a745;
+    }
+
+    .error-message {
+        background: rgba(220, 53, 69, 0.1);
+        border: 1px solid rgba(220, 53, 69, 0.3);
+        color: #dc3545;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Loading Animation */
+    .loading {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .loading::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        animation: shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        header {
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .search-bar {
+            margin: 0;
+            max-width: 100%;
+        }
+
+        nav {
+            padding: 1rem;
+            gap: 1rem;
+        }
+
+        nav a {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .container {
+            padding: 1rem;
+            min-height: calc(100vh - 200px);
+        }
+
+        .edit-card {
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+
+        .edit-card h1 {
+            font-size: 1.8rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .user-menu {
+            justify-content: center;
+        }
+
+        .user-menu button {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        .edit-card {
+            padding: 1.5rem;
+        }
+
+        .edit-card h1 {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* Focus styles for accessibility */
+    button:focus,
+    input:focus,
+    a:focus {
+        outline: 2px solid #667eea;
+        outline-offset: 2px;
+    }
+
+    /* Address fields group */
+    .address-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(102, 126, 234, 0.05);
+        border-radius: 15px;
+        border-left: 4px solid #667eea;
+    }
+
+    .address-group h3 {
+        color: #667eea;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Input focus effects */
+    .form-group input:focus::placeholder {
+        opacity: 0;
+    }
+
+    .form-group input::placeholder {
+        transition: opacity 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <a href="/"><img th:src="@{/images/logo.png}" alt="로고"></a>
+  </div>
+
+  <div class="search-bar">
+    <form th:action="@{/product/search}" method="get" id="searchForm">
+      <input type="text" name="keyword" placeholder="상품을 검색하세요" id="searchInput">
+      <button type="submit" id="searchBtn">검색</button>
+    </form>
+  </div>
+
+  <div class="user-menu">
+    <div th:if="${#authorization.expression('isAuthenticated()')}">
+      <span th:text="${#authentication.name}">유저</span>님 환영합니다!
+      <a href="/mypage"><button>마이페이지</button></a>
+      <a href="/cart"><button>장바구니</button></a>
+
+      <!-- ✅ 관리자 전용 버튼 -->
+      <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        <a href="/admin"><button>관리자 페이지</button></a>
+      </div>
+
+      <a href="/logout"><button>로그아웃</button></a>
+    </div>
+
+    <div th:if="${#authorization.expression('!isAuthenticated()')}">
+      <a href="/login"><button>로그인</button></a>
+      <a href="/insertMember"><button>회원가입</button></a>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <a href="/">전체 상품</a>
+  <a href="/product/best">베스트</a>
+  <a href="/product/category?type=의류">의류</a>
+  <a href="/product/category?type=전자">전자제품</a>
+  <a href="/free">자유게시판</a>
+  <a href="/">상품 리뷰 게시판</a>
+</nav>
+
+<div class="container">
+  <div class="edit-card">
+    <h1>✏️ 정보 수정</h1>
+
+    <!-- 성공/에러 메시지 (필요시 추가) -->
+    <!-- <div class="message success-message">
+        ✅ 정보가 성공적으로 수정되었습니다.
+    </div> -->
+
+    <form action="/member/edit" method="post" class="edit-form" id="editForm">
+      <div class="form-group">
+        <label for="name">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"/>
+          </svg>
+          이름
+        </label>
+        <input type="text" id="name" name="name" required placeholder="이름을 입력하세요">
+      </div>
+
+      <div class="form-group">
+        <label for="email">
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+          </svg>
+          이메일
+        </label>
+        <input type="email" id="email" name="email" required placeholder="이메일을 입력하세요">
+      </div>
+
+      <div class="address-group">
+        <h3>
+          <svg class="icon" viewBox="0 0 24 24">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          </svg>
+          주소 정보
+        </h3>
+
+        <div class="form-group">
+          <label for="addressCity">주소(시군구)</label>
+          <input type="text" id="addressCity" name="addressCity" required placeholder="시/군/구를 입력하세요">
+        </div>
+
+        <div class="form-group">
+          <label for="addressDetail">상세 주소</label>
+          <input type="text" id="addressDetail" name="addressDetail" required placeholder="상세 주소를 입력하세요">
+        </div>
+
+        <div class="form-group">
+          <label for="postcode">우편번호</label>
+          <input type="text" id="postcode" name="postcode" required placeholder="우편번호를 입력하세요">
+        </div>
+      </div>
+
+      <button type="submit" class="update-button" id="updateButton">
+        수정 완료
+      </button>
+    </form>
+
+    <a href="/mypage" class="back-link">
+      <svg class="icon" viewBox="0 0 24 24">
+        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+      </svg>
+      마이페이지로 돌아가기
+    </a>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+
+      // 헤더 스크롤 효과
+      function handleScroll() {
+          const header = document.querySelector('header');
+          if (window.scrollY > 50) {
+              header.style.background = 'rgba(255, 255, 255, 0.98)';
+              header.style.boxShadow = '0 2px 30px rgba(0, 0, 0, 0.15)';
+          } else {
+              header.style.background = 'rgba(255, 255, 255, 0.95)';
+              header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+          }
+      }
+
+      window.addEventListener('scroll', handleScroll);
+
+      // 폼 제출 처리
+      const editForm = document.getElementById('editForm');
+      const updateButton = document.getElementById('updateButton');
+
+      if (editForm && updateButton) {
+          editForm.addEventListener('submit', function() {
+              // 로딩 효과
+              updateButton.classList.add('loading');
+              updateButton.innerHTML = '🔄 수정 중...';
+              updateButton.disabled = true;
+          });
+      }
+
+      // 실시간 폼 검증
+      const requiredInputs = document.querySelectorAll('input[required]');
+
+      function validateForm() {
+          let isValid = true;
+
+          requiredInputs.forEach(input => {
+              if (input.value.trim() === '') {
+                  isValid = false;
+              }
+          });
+
+          if (isValid) {
+              updateButton.disabled = false;
+              updateButton.style.opacity = '1';
+          } else {
+              updateButton.disabled = true;
+              updateButton.style.opacity = '0.6';
+          }
+      }
+
+      // 입력 필드 이벤트 리스너
+      requiredInputs.forEach(input => {
+          input.addEventListener('input', validateForm);
+      });
+
+      // 초기 검증
+      validateForm();
+
+      // 이메일 형식 검증
+      const emailInput = document.getElementById('email');
+      if (emailInput) {
+          emailInput.addEventListener('blur', function() {
+              const email = this.value;
+              const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+              if (email && !emailPattern.test(email)) {
+                  this.style.borderColor = '#dc3545';
+                  showToast('올바른 이메일 형식을 입력해주세요.');
+              } else {
+                  this.style.borderColor = 'rgba(102, 126, 234, 0.2)';
+              }
+          });
+      }
+
+      // 우편번호 형식 검증 (숫자만 허용)
+      const postcodeInput = document.getElementById('postcode');
+      if (postcodeInput) {
+          postcodeInput.addEventListener('input', function() {
+              this.value = this.value.replace(/[^0-9-]/g, '');
+          });
+
+          postcodeInput.addEventListener('blur', function() {
+              const postcode = this.value;
+              if (postcode && postcode.length < 5) {
+                  this.style.borderColor = '#dc3545';
+                  showToast('올바른 우편번호를 입력해주세요.');
+              } else {
+                  this.style.borderColor = 'rgba(102, 126, 234, 0.2)';
+              }
+          });
+      }
+
+      // 입력 필드 애니메이션
+      const inputs = document.querySelectorAll('input');
+      inputs.forEach(input => {
+          input.addEventListener('focus', function() {
+              this.style.transform = 'translateY(-2px)';
+              this.parentElement.style.transform = 'translateY(-2px)';
+          });
+
+          input.addEventListener('blur', function() {
+              this.style.transform = 'translateY(0)';
+              this.parentElement.style.transform = 'translateY(0)';
+          });
+      });
+
+      // 검색 폼 제출 시 로딩 효과
+      const searchForm = document.getElementById('searchForm');
+      const searchBtn = document.getElementById('searchBtn');
+
+      if (searchForm && searchBtn) {
+          searchForm.addEventListener('submit', function() {
+              searchBtn.innerHTML = '검색중...';
+              searchBtn.disabled = true;
+          });
+      }
+
+      // 페이지 로딩 애니메이션
+      document.body.style.opacity = '0';
+      setTimeout(() => {
+          document.body.style.transition = 'opacity 0.5s ease';
+          document.body.style.opacity = '1';
+      }, 100);
+
+      // 버튼 리플 효과
+      const buttons = document.querySelectorAll('button, .back-link');
+      buttons.forEach(button => {
+          button.addEventListener('click', function(e) {
+              const ripple = document.createElement('span');
+              const rect = this.getBoundingClientRect();
+              const size = Math.max(rect.width, rect.height);
+              const x = e.clientX - rect.left - size / 2;
+              const y = e.clientY - rect.top - size / 2;
+
+              ripple.style.cssText = `
+                  position: absolute;
+                  width: ${size}px;
+                  height: ${size}px;
+                  left: ${x}px;
+                  top: ${y}px;
+                  background: rgba(255, 255, 255, 0.3);
+                  border-radius: 50%;
+                  transform: scale(0);
+                  animation: ripple 0.6s linear;
+                  pointer-events: none;
+              `;
+
+              this.style.position = 'relative';
+              this.style.overflow = 'hidden';
+              this.appendChild(ripple);
+
+              setTimeout(() => {
+                  ripple.remove();
+              }, 600);
+          });
+      });
+
+      // CSS 애니메이션 정의
+      const style = document.createElement('style');
+      style.textContent = `
+          @keyframes ripple {
+              to {
+                  transform: scale(4);
+                  opacity: 0;
+              }
+          }
+      `;
+      document.head.appendChild(style);
+
+      // 토스트 메시지 함수
+      function showToast(message) {
+          const toast = document.createElement('div');
+          toast.style.cssText = `
+              position: fixed;
+              top: 100px;
+              right: 20px;
+              background: linear-gradient(45deg, #667eea, #764ba2);
+              color: white;
+              padding: 15px 25px;
+              border-radius: 10px;
+              z-index: 10000;
+              font-weight: 500;
+              box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+              animation: slideInRight 0.3s ease;
+          `;
+          toast.textContent = message;
+
+          document.body.appendChild(toast);
+
+          setTimeout(() => {
+              toast.style.animation = 'slideOutRight 0.3s ease forwards';
+              setTimeout(() => {
+                  if (document.body.contains(toast)) {
+                      document.body.removeChild(toast);
+                  }
+              }, 300);
+          }, 3000);
+      }
+
+      // 토스트 애니메이션
+      const toastStyle = document.createElement('style');
+      toastStyle.textContent = `
+          @keyframes slideInRight {
+              from {
+                  transform: translateX(100%);
+                  opacity: 0;
+              }
+              to {
+                  transform: translateX(0);
+                  opacity: 1;
+              }
+          }
+          @keyframes slideOutRight {
+              from {
+                  transform: translateX(0);
+                  opacity: 1;
+              }
+              to {
+                  transform: translateX(100%);
+                  opacity: 0;
+              }
+          }
+      `;
+      document.head.appendChild(toastStyle);
+
+      // 주소 정보 그룹 애니메이션
+      const addressGroup = document.querySelector('.address-group');
+      if (addressGroup) {
+          addressGroup.addEventListener('mouseenter', function() {
+              this.style.transform = 'translateY(-2px)';
+              this.style.boxShadow = '0 10px 25px rgba(102, 126, 234, 0.1)';
+          });
+
+          addressGroup.addEventListener('mouseleave', function() {
+              this.style.transform = 'translateY(0)';
+              this.style.boxShadow = 'none';
+          });
+      }
+
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .complete-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .success-icon {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .success-icon::before {
+            content: "✅";
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .success-title {
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+        .success-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        .order-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #495057;
+        }
+        .info-value {
+            color: #212529;
+        }
+        .order-items {
+            margin: 20px 0;
+        }
+        .item-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .item-details {
+            flex: 1;
+        }
+        .item-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #212529;
+            margin-bottom: 5px;
+        }
+        .item-quantity {
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        .item-price {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .total-section {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: right;
+            margin: 20px 0;
+        }
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .delivery-info {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .payment-info {
+            background: #f3e5f5;
+            border-left: 4px solid #9c27b0;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .notice {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="complete-container">
+    <div class="success-icon"></div>
+    <h1 class="success-title">주문이 완료되었습니다!</h1>
+    <p class="success-subtitle">주문해주셔서 감사합니다. 빠른 시일 내에 배송해드리겠습니다.</p>
+
+    <!-- 주문 기본 정보 -->
+    <div class="order-info">
+        <h3>주문 정보</h3>
+        <div class="info-row">
+            <span class="info-label">주문 번호:</span>
+            <span class="info-value" th:text="${order.orderId}">#12345</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">주문 일시:</span>
+            <span class="info-value" th:text="${#temporals.format(order.createdAt, 'yyyy년 MM월 dd일 HH:mm')}">2024년 3월 15일 14:30</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">주문자:</span>
+            <span class="info-value" th:text="${order.member != null ? order.member.name : 'N/A'}">홍길동</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">주문 상태:</span>
+            <span class="info-value" th:text="${order.status}">주문 접수</span>
+        </div>
+    </div>
+
+    <!-- 배송 정보 -->
+    <div class="delivery-info">
+        <h4>🚚 배송 정보</h4>
+        <p><strong>배송지:</strong> <span th:text="${order.address}">서울시 강남구 테헤란로 123</span></p>
+        <p><strong>예상 배송일:</strong> 2-3일 내 배송 예정</p>
+    </div>
+
+    <!-- 결제 정보 -->
+    <div class="payment-info">
+        <h4>💳 결제 정보</h4>
+        <p><strong>결제 수단:</strong>
+            <span th:switch="${order.paymentMethod}">
+                <span th:case="'CARD'">신용카드</span>
+                <span th:case="'BANK'">계좌이체</span>
+                <span th:case="'CASH'">무통장입금</span>
+                <span th:case="*">기타</span>
+            </span>
+        </p>
+        <p><strong>결제 상태:</strong> 결제 완료</p>
+    </div>
+
+    <!-- 주문 상품 목록 -->
+    <div class="order-items">
+        <h3>주문 상품</h3>
+        <div th:each="item : ${order.orderItems}" class="item-card">
+            <div class="item-details">
+                <div class="item-name" th:text="${item.product.productName}">상품명</div>
+                <div class="item-quantity">수량: <span th:text="${item.quantity}">1</span>개</div>
+                <div class="item-price">
+                    단가: <span th:text="${#numbers.formatInteger(item.product.price, 3, 'COMMA')}">10,000</span>원
+                </div>
+            </div>
+            <div style="text-align: right;">
+                <div style="font-size: 0.9rem; color: #6c757d;">소계</div>
+                <div style="font-size: 1.1rem; font-weight: bold; color: #007bff;">
+                    <span th:text="${#numbers.formatInteger(item.product.price * item.quantity, 3, 'COMMA')}">10,000</span>원
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 총 결제 금액 -->
+    <div class="total-section">
+        <div style="font-size: 1.1rem; margin-bottom: 10px;">총 결제 금액</div>
+        <div class="total-amount">
+            <span th:text="${#numbers.formatInteger(order.totalPrice, 3, 'COMMA')}">50,000</span>원
+        </div>
+    </div>
+
+    <!-- 안내사항 -->
+    <div class="notice">
+        <h4>📋 주문 안내사항</h4>
+        <ul style="margin: 10px 0; padding-left: 20px;">
+            <li>주문 내역은 마이페이지에서 확인하실 수 있습니다.</li>
+            <li>배송 관련 문의는 고객센터(1588-1234)로 연락주세요.</li>
+            <li>주문 변경/취소는 배송 전까지만 가능합니다.</li>
+            <li>결제 확인 후 1-2일 내에 배송이 시작됩니다.</li>
+        </ul>
+    </div>
+
+    <!-- 버튼 그룹 -->
+    <div class="button-group">
+        <a href="/" class="btn btn-primary">계속 쇼핑하기</a>
+        <a href="/order/list" class="btn btn-secondary">주문 내역 보기</a>
+        <a href="/mypage" class="btn btn-success">마이페이지</a>
+    </div>
+</div>
+<script>
+    // 페이지 로드 시 축하 애니메이션
+window.addEventListener('load', function() {
+    const container = document.querySelector('.complete-container');
+    container.style.opacity = '0';
+    container.style.transform = 'translateY(30px)';
+    container.style.transition = 'all 0.8s ease';
+
+    setTimeout(() => {
+        container.style.opacity = '1';
+        container.style.transform = 'translateY(0)';
+    }, 100);
+});
+
+
+</script>
+</body>
+</html>

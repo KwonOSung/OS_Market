@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>장바구니</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .cart-container {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    .cart-item {
+        background: white;
+        margin: 10px 0;
+        padding: 15px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .item-info {
+        flex: 1;
+    }
+    .item-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+    .empty-cart {
+        text-align: center;
+        padding: 50px;
+        color: #666;
+    }
+  </style>
+</head>
+<body>
+<div class="cart-container">
+  <h1>장바구니</h1>
+
+  <div th:if="${cartItems == null or #lists.isEmpty(cartItems)}" class="empty-cart">
+    <h3>장바구니가 비어있습니다</h3>
+    <p>상품을 담아보세요!</p>
+    <a href="/" class="btn btn-primary">쇼핑 계속하기</a>
+  </div>
+
+  <div th:if="${cartItems != null and not #lists.isEmpty(cartItems)}">
+
+    <form action="/order/confirm" method="post" id="cartForm">
+      <div th:each="item, iterStat : ${cartItems}" class="cart-item">
+        <!-- 체크박스 -->
+        <input type="checkbox"
+               class="cart-checkbox"
+               th:data-id="${item.id}"
+               th:id="'cartChk' + ${iterStat.index}"
+               onclick="toggleQuantity(this, [[${iterStat.index}]])">
+
+        <div class="item-info">
+          <span th:text="${item.product.productName}"></span>
+          <p>
+            수량:
+            <input type="number" class="quantity-input" th:value="${item.quantity}" min="1">
+          </p>
+          <p>가격: <span th:text="${item.product.price}">10000</span>원</p>
+        </div>
+        <div class="item-actions">
+          <button type="button" class="btn btn-danger" onclick="removeCartItem(this)">삭제</button>
+        </div>
+      </div>
+      <div id="hiddenFields"></div>
+      <div style="margin-top:20px; text-align:center;">
+        <a href="/" class="btn btn-primary">쇼핑 계속하기</a>
+        <button type="submit" class="btn btn-primary">주문하기</button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<script>
+  document.getElementById("cartForm").addEventListener("submit", function(event) {
+    // 기존 hidden 필드 제거
+    document.getElementById("hiddenFields").innerHTML = "";
+
+    // 체크된 상품만 hidden input으로 추가
+    document.querySelectorAll(".cart-checkbox:checked").forEach(function(chk) {
+      let cartId = chk.getAttribute("data-id");
+      let quantity = chk.closest(".cart-item").querySelector(".quantity-input").value;
+
+      // cartIds hidden input
+      let cartInput = document.createElement("input");
+      cartInput.type = "hidden";
+      cartInput.name = "cartIds";
+      cartInput.value = cartId;
+      document.getElementById("hiddenFields").appendChild(cartInput);
+
+      // quantities hidden input
+      let qtyInput = document.createElement("input");
+      qtyInput.type = "hidden";
+      qtyInput.name = "quantities";
+      qtyInput.value = quantity;
+      document.getElementById("hiddenFields").appendChild(qtyInput);
+    });
+
+    // 체크박스 아무것도 선택 안 하면 경고
+    if (document.querySelectorAll(".cart-checkbox:checked").length === 0) {
+      alert("주문할 상품을 선택하세요!");
+      event.preventDefault(); // submit 중단
+    }
+  });
+</script>
+
+</body>
+</html>
