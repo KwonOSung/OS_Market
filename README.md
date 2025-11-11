@@ -8,12 +8,12 @@
 ![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=flat-square&logo=springsecurity&logoColor=white)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
-
+<br><br><br>
 
 ## 🔒 보안 및 사용자 권한 관리
 * **Spring Security 기반 인증/인가:** Spring Security를 도입하여 모든 페이지에 대한 접근 제어(Authorization) 및 사용자 세션 관리를 안전하게 처리했습니다.
 * **관리자(ADMIN) 권한 분리:** 관리자 로그인을 통해 상품 등록, 회원 관리 등 민감한 기능은 오직 **ADMIN 권한**을 가진 사용자만 접근 가능하도록 역할(Role) 기반의 접근 제어를 구현했습니다.
-
+<br><br>
 ## 🛒 쇼핑몰 핵심 로직
 * **장바구니 및 주문 시스템:** 상품 선택 $\rightarrow$ 장바구니에 담기 $\rightarrow$ 주문 생성 $\rightarrow$ 재고 차감에 이르는 일련의 과정을 데이터 손실 없이 처리하여 데이터 무결성을 확보했습니다.
 
