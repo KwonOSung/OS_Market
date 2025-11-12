@@ -17,7 +17,7 @@
 ## 🛒 쇼핑몰 핵심 로직
 * **장바구니 및 주문 시스템:** 상품 선택 $\rightarrow$ 장바구니에 담기 $\rightarrow$ 주문 생성 $\rightarrow$ 재고 차감에 이르는 일련의 과정을 데이터 손실 없이 처리하여 데이터 무결성을 확보했습니다.
 
-
+<br><br>
    
 ## 📊 데이터베이스 설계 (ERD)
 <img width="1152" height="530" alt="DB설계" src="https://github.com/user-attachments/assets/1ef1dbd8-8465-4cc8-ab67-927bb8ddf0eb" />
