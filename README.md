@@ -30,6 +30,34 @@
 * **주문(Order) - 주문 상품(OrderItem):** 1:N 관계. 주문 하나는 여러 종류의 상품을 포함합니다. (주문 상세 정보 관리)
 * **상품(Product) - 주문 상품(OrderItem):** N:1 관계. 여러 주문 상품이 하나의 상품 정보를 참조합니다.
 
+<div align="center">
+   <img width="1903" height="932" alt="메인화면" src="https://github.com/user-attachments/assets/abbb5ee8-67ae-4f45-ad08-6daedc52f6ff" />
+   <img width="1867" height="792" alt="관리자페이지" src="https://github.com/user-attachments/assets/2dd04334-729b-484c-a787-98fb69adf64a" />
+<div align="center">
+  **메인 화면:** 깔끔한 UI와 직관적인 상품 배치를 통한 사용자 접근성 확보
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  **관리자 페이지:** 상품 CRUD 및 회원 관리 기능 구현을 통한 백엔드 관리 능력 증명
+</div>
+<br>
+
+<div align="center">
+ <img width="1185" height="598" alt="마이페이지" src="https://github.com/user-attachments/assets/c31cf4e0-66e3-4def-a64d-7892aa10dae3" />
+ <img width="815" height="811" alt="주문페이지" src="https://github.com/user-attachments/assets/d9bf1fd5-404e-464b-bc3b-beb78ce1fce9" />  
+</div>
+<div align="center">
+  **상품 주문/결제:** 장바구니 기반 주문 생성 및 안전한 트랜잭션 처리
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  **마이페이지:** 회원 정보 관리 및 개인화된 주문 내역 조회 기능 구현
+</div>
+<br>
+
+<div align="center">
+ <img width="1373" height="511" alt="게시판" src="https://github.com/user-attachments/assets/1d51870f-b55c-424e-9120-c124a2e1716c" />
+ <div align="center">
+  **자유 게시판:** 기본적인 글쓰기, 읽기, 수정, 삭제 기능을 갖춘 게시판 모듈
+</div>
+</div>
+
 
 
    
