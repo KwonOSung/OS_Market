@@ -36,7 +36,7 @@
 <div align="center">
   **메인 화면:** 깔끔한 UI와 직관적인 상품 배치를 통한 사용자 접근성 확보<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  **관리자 페이지:** 상품 CRUD 및 회원 관리 기능 구현을 통한 백엔드 관리 능력 증명<br>
+  **관리자 페이지:** 상품 CRUD 및 회원 관리 기능 구현<br>
 </div>
 <br>
 
@@ -54,7 +54,7 @@
 <div align="center">
  <img width="1373" height="511" alt="게시판" src="https://github.com/user-attachments/assets/1d51870f-b55c-424e-9120-c124a2e1716c" />
  <div align="center">
-  **자유 게시판:** 기본적인 글쓰기, 읽기, 수정, 삭제 기능을 갖춘 게시판 모듈
+  **자유 게시판:** 기본적인 글쓰기, 읽기, 수정, 삭제 기능을 갖춘 게시판 
 </div>
 </div>
 <br>
