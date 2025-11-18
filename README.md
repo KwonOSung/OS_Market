@@ -34,9 +34,9 @@
    <img width="1903" height="932" alt="메인화면" src="https://github.com/user-attachments/assets/abbb5ee8-67ae-4f45-ad08-6daedc52f6ff" />
    <img width="1867" height="792" alt="관리자페이지" src="https://github.com/user-attachments/assets/2dd04334-729b-484c-a787-98fb69adf64a" />
 <div align="center">
-  **메인 화면:** 깔끔한 UI와 직관적인 상품 배치를 통한 사용자 접근성 확보
+  **메인 화면:** 깔끔한 UI와 직관적인 상품 배치를 통한 사용자 접근성 확보<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  **관리자 페이지:** 상품 CRUD 및 회원 관리 기능 구현을 통한 백엔드 관리 능력 증명
+  **관리자 페이지:** 상품 CRUD 및 회원 관리 기능 구현을 통한 백엔드 관리 능력 증명<br>
 </div>
 <br>
 
@@ -45,9 +45,9 @@
  <img width="815" height="811" alt="주문페이지" src="https://github.com/user-attachments/assets/d9bf1fd5-404e-464b-bc3b-beb78ce1fce9" />  
 </div>
 <div align="center">
-  **상품 주문/결제:** 장바구니 기반 주문 생성 및 안전한 트랜잭션 처리
+  **상품 주문/결제:** 장바구니 기반 주문 생성 및 안전한 트랜잭션 처리<br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  **마이페이지:** 회원 정보 관리 및 개인화된 주문 내역 조회 기능 구현
+  **마이페이지:** 회원 정보 관리 및 개인화된 주문 내역 조회 기능 구현<br>
 </div>
 <br>
 
@@ -57,7 +57,7 @@
   **자유 게시판:** 기본적인 글쓰기, 읽기, 수정, 삭제 기능을 갖춘 게시판 모듈
 </div>
 </div>
-
+<br>
 
 
    
